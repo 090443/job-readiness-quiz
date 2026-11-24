@@ -4,6 +4,643 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>大学生求职准备度自测</title>
+  <style>
+    :root{
+      --bg:#f6f7fb;
+      --card:#fff;
+      --text:#172033;
+      --muted:#68738a;
+      --primary:#4f46e5;
+      --primary-2:#7c6cf7;
+      --ok:#16a34a;
+      --warn:#f59e0b;
+      --bad:#ef4444;
+      --line:#e7eaf2;
+      --shadow:0 12px 30px rgba(31,41,55,.12);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+    .wrap{max-width:760px;margin:0 auto;padding:24px 16px 48px}
+    .hero{padding:30px 24px;border-radius:24px;background:linear-gradient(135deg,#4f46e5,#8b5cf6);color:#fff;box-shadow:var(--shadow)}
+    .hero h1{margin:0 0 10px;font-size:28px;letter-spacing:.5px}
+    .hero p{margin:0;opacity:.92}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px;margin-top:18px;box-shadow:0 4px 16px rgba(31,41,55,.06)}
+    .intro-list{display:grid;gap:10px;margin:16px 0 0;padding:0;list-style:none}
+    .intro-list li{padding:12px 14px;border-radius:14px;background:#f3f4ff;color:#374151}
+    button{border:0;cursor:pointer;font:inherit}
+    .primary{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 20px;border-radius:14px;background:var(--primary);color:#fff;font-weight:700;transition:.2s}
+    .primary:hover{background:var(--primary-2)}
+    .secondary{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 16px;border-radius:12px;background:#eef2ff;color:var(--primary);font-weight:600}
+    .secondary:disabled{opacity:.45;cursor:not-allowed}
+    .progress{height:8px;background:#eef1f7;border-radius:999px;overflow:hidden;margin:14px 0}
+    .progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--primary),var(--primary-2));border-radius:999px;transition:width .25s}
+    .question-top{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px}
+    .badge{font-size:13px;color:var(--muted)}
+    h2{margin:0;font-size:21px}
+    .options{display:grid;gap:12px;margin-top:16px}
+    .option{width:100%;text-align:left;padding:15px 16px;border:1px solid var(--line);border-radius:16px;background:#fff;color:var(--text);transition:.15s}
+    .option:hover{border-color:var(--primary);background:#f7f6ff}
+    .option[aria-pressed="true"]{border-color:var(--primary);background:#eef2ff;box-shadow:0 0 0 2px rgba(79,70,229,.12)}
+    .option strong{display:block;margin-bottom:4px}
+    .option span{color:var(--muted);font-size:14px}
+    .quiz-nav{display:flex;justify-content:space-between;gap:10px;margin-top:16px;flex-wrap:wrap}
+    .result-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+    .score{width:86px;height:86px;border-radius:24px;display:grid;place-items:center;background:#f3f4ff;font-size:22px;font-weight:800;color:var(--primary)}
+    .level{font-size:22px;font-weight:800}
+    .summary{margin:16px 0;color:var(--muted)}
+    .share-note{margin:0 0 12px;color:var(--muted);font-size:14px}
+    .dim-list{display:grid;gap:12px;margin-top:16px}
+    .dim{padding:14px;border-radius:16px;background:#f8fafc;border:1px solid var(--line)}
+    .dim-top{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+    .dim-name{font-weight:700}
+    .dim-score{font-size:14px;color:var(--muted)}
+    .weak-tag{margin-left:8px;color:#fff;background:var(--bad);border-radius:999px;padding:2px 8px;font-size:12px;font-weight:600}
+    .dim-hint{margin-left:8px;color:#94a3b8;font-size:12px;font-weight:500}
+    .dim-bar{height:8px;background:#eef1f7;border-radius:999px;overflow:hidden;margin-top:10px}
+    .dim-bar span{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--primary),var(--primary-2))}
+    .sections{display:grid;gap:12px;margin-top:16px}
+    .section{padding:14px;border-radius:16px;background:#f8fafc}
+    .section h3{margin:0 0 8px;font-size:16px}
+    .section ul{margin:0;padding-left:18px;color:#374151}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+    .hidden{display:none}
+    .tip{font-size:13px;color:var(--muted);margin-top:12px}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    #questionTitle:focus{outline:none}
+    @media (max-width:520px){
+      .wrap{padding:16px 12px 40px}
+      .hero{padding:24px 18px}
+      .hero h1{font-size:23px}
+      .card{padding:18px}
+      .score{width:72px;height:72px;font-size:18px}
+      .quiz-nav{flex-direction:column}
+      .quiz-nav button{width:100%}
+    }
+  </style>
 </head>
-<body>待上传占位，随后由本地文件覆盖。</body>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <h1>大学生求职准备度自测</h1>
+      <p>不看鸡汤，只看简历、实习、证书、面试和投递动作。10 道题，生成一份可执行清单。</p>
+    </section>
+
+    <section class="card" id="intro">
+      <h2>这个测评能帮你判断什么</h2>
+      <ul class="intro-list">
+        <li>梳理你在简历材料、岗位定向、面试表达、投递执行和能力自省上的当前状态。</li>
+        <li>题目约 2 分钟完成，只按你现在的真实情况选择，没有标准答案。</li>
+        <li>结果会给出短板优先级、对应行动和可先尝试的方向，作为求职准备参考。</li>
+      </ul>
+      <button class="primary" id="startBtn">开始自测</button>
+      <p class="tip">说明：结果只是求职准备参考，不代表录用保证；不收集个人敏感信息。</p>
+    </section>
+
+    <section class="card hidden" id="quiz">
+      <div class="progress"><span id="bar"></span></div>
+      <div class="question-top">
+        <div aria-live="polite">
+          <div class="badge" id="counter"></div>
+          <h2 id="questionTitle" tabindex="-1"></h2>
+        </div>
+      </div>
+      <div class="options" id="options"></div>
+      <div class="quiz-nav">
+        <button class="secondary" id="prevBtn" type="button">上一题</button>
+      </div>
+      <p class="tip">快捷键：1/2/3/4 选择选项，← 返回上一题。</p>
+    </section>
+
+    <section class="card hidden" id="result">
+      <p class="share-note">这份结果适合截图发给同学对照。</p>
+      <div class="result-head">
+        <div class="score" id="scoreBox">0/30</div>
+        <div>
+          <div class="badge">你的求职准备度</div>
+          <div class="level" id="levelName"></div>
+        </div>
+      </div>
+      <p class="summary" id="summary"></p>
+
+      <div class="dim-list" id="dimList"></div>
+
+      <div class="sections">
+        <div class="section">
+          <h3>优先补齐</h3>
+          <ul id="gaps"></ul>
+        </div>
+        <div class="section">
+          <h3>7 天行动清单</h3>
+          <ul id="actions"></ul>
+        </div>
+        <div class="section">
+          <h3>更适合先试的方向</h3>
+          <ul id="directions"></ul>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="primary" id="copyBtn" type="button">复制文本</button>
+        <button class="secondary" id="exportBtn" type="button">导出 .txt</button>
+        <button class="secondary" id="clearBtn" type="button">清空重测</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const questions = [
+      {
+        title: "你现在的简历处于什么状态？",
+        options: [
+          { score: 0, label: "还没有简历", desc: "连教育背景、技能、课程项目都没整理。" },
+          { score: 1, label: "有草稿，但没按岗位改过", desc: "内容很笼统，还没有项目结果和数据。" },
+          { score: 2, label: "有一版完整简历", desc: "基本信息、经历、技能齐全，但还没反复打磨。" },
+          { score: 3, label: "已经按目标岗位改过", desc: "经历有动作、过程、结果，岗位关键词清楚。" }
+        ]
+      },
+      {
+        title: "你最近一次整理项目/实践经历是什么时候？",
+        options: [
+          { score: 0, label: "没有可写的经历", desc: "课程作业、社团、兼职都还没记录。" },
+          { score: 1, label: "只记得大概做过什么", desc: "没有照片、成果、数据或交付物。" },
+          { score: 2, label: "能列出 2～3 段经历", desc: "有时间、任务、角色，但结果描述还不够具体。" },
+          { score: 3, label: "经历能写成 STAR 结构", desc: "背景、任务、行动、结果都讲得清楚。" }
+        ]
+      },
+      {
+        title: "你对目标岗位的了解程度如何？",
+        options: [
+          { score: 0, label: "还没想过岗位", desc: "海投，什么都投。" },
+          { score: 1, label: "只知道大概行业", desc: "比如想找工程、行政、运营，但岗位边界不清楚。" },
+          { score: 2, label: "看过几类岗位 JD", desc: "知道职责和要求，但还没整理关键词。" },
+          { score: 3, label: "有明确目标岗位清单", desc: "知道目标岗位、城市、门槛和缺口。" }
+        ]
+      },
+      {
+        title: "你现在有哪些能证明能力的材料？",
+        options: [
+          { score: 0, label: "没有作品或证书", desc: "没有可展示的文件、作品、截图或证书。" },
+          { score: 1, label: "有课程作业但没整理", desc: "文件散在电脑里，没有汇总成作品集。" },
+          { score: 2, label: "有 1～2 个可展示成果", desc: "图纸、表格、网页、报告或证书能发给别人看。" },
+          { score: 3, label: "有较完整作品集", desc: "分类清楚，能说明自己承担的部分。" }
+        ]
+      },
+      {
+        title: "你的面试准备到了哪一步？",
+        options: [
+          { score: 0, label: "从没练过自我介绍", desc: "被问“介绍一下自己”会卡壳。" },
+          { score: 1, label: "写过一段草稿", desc: "但没有计时演练，也没录音回看。" },
+          { score: 2, label: "能回答基础问题", desc: "自我介绍、优缺点、项目经历能说出来。" },
+          { score: 3, label: "做过模拟面试复盘", desc: "有时间控制、回答结构和改进记录。" }
+        ]
+      },
+      {
+        title: "你投递岗位的频率和记录情况是？",
+        options: [
+          { score: 0, label: "还没开始投", desc: "没收藏岗位，也没有投递表。" },
+          { score: 1, label: "偶尔投几份", desc: "没有记录渠道、时间、状态和跟进。" },
+          { score: 2, label: "有固定投递节奏", desc: "每周投一批，但跟进记录还不完整。" },
+          { score: 3, label: "有投递追踪表", desc: "渠道、岗位、投递时间、笔试面试状态都有记录。" }
+        ]
+      },
+      {
+        title: "你对自己短板的判断清楚吗？",
+        options: [
+          { score: 0, label: "只焦虑，不知道差在哪", desc: "觉得没经验，但不知道补什么。" },
+          { score: 1, label: "知道几个模糊缺点", desc: "比如不会表达、软件不熟，但没有行动。" },
+          { score: 2, label: "能列出 2～3 个短板", desc: "技能、证书、经历或表达方面较明确。" },
+          { score: 3, label: "短板对应了练习计划", desc: "每个缺口都有学习任务和截止时间。" }
+        ]
+      },
+      {
+        title: "你在校内技能/软件上的掌握程度？",
+        options: [
+          { score: 0, label: "还停留在听课层面", desc: "课后没有自己独立练习。" },
+          { score: 1, label: "跟着教程能做基础操作", desc: "换题目就容易卡住。" },
+          { score: 2, label: "能独立完成普通任务", desc: "图纸、表格、文案或工具操作基本能交付。" },
+          { score: 3, label: "能处理常见错误并交付成果", desc: "知道规范、检查点和常见问题怎么解决。" }
+        ]
+      },
+      {
+        title: "你目前的求职心态更接近哪一种？",
+        options: [
+          { score: 0, label: "拖延+害怕被拒", desc: "总想准备完美了再投。" },
+          { score: 1, label: "焦虑但动作少", desc: "刷很多经验帖，实际投递和练习不够。" },
+          { score: 2, label: "愿意边投边补", desc: "接受先投基础岗位，再根据反馈调整。" },
+          { score: 3, label: "稳定执行日常任务", desc: "每天有固定投递、复盘和学习动作。" }
+        ]
+      },
+      {
+        title: "你身边有没有可利用的求职信息渠道？",
+        options: [
+          { score: 0, label: "完全不了解渠道", desc: "不知道学校就业网、招聘平台和内推入口。" },
+          { score: 1, label: "只刷短视频和帖子", desc: "信息很碎，没有进入正式投递渠道。" },
+          { score: 2, label: "知道学校和平台渠道", desc: "看过就业网、招聘软件，但还没系统整理。" },
+          { score: 3, label: "有渠道清单和联系人", desc: "老师、学长、校招群、平台和岗位来源都在跟进。" }
+        ]
+      }
+    ];
+
+    const dimensions = [
+      { name: "简历与材料", questions: [0, 1, 3] },
+      { name: "岗位定向", questions: [2, 9] },
+      { name: "面试表达", questions: [4] },
+      { name: "投递与心态", questions: [5, 8] },
+      { name: "自省与技能", questions: [6, 7] }
+    ];
+
+    const STORAGE_KEY = "job-readiness-v1";
+    let current = 0;
+    let answers = [];
+    let locked = false;
+    let resultData = null;
+    const $ = id => document.getElementById(id);
+
+    function saveProgress(){
+      try{
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ current, answers, result: resultData }));
+      }catch(e){}
+    }
+
+    function loadProgress(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if(!raw) return null;
+        return JSON.parse(raw);
+      }catch(e){
+        return null;
+      }
+    }
+
+    function clearStorage(){
+      try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+    }
+
+    function clampAnswer(value){
+      return typeof value === "number" && [0,1,2,3].includes(value) ? value : null;
+    }
+
+    function progressPercent(){
+      const answered = answers.filter(v => clampAnswer(v) !== null).length;
+      return Math.round(answered / questions.length * 100);
+    }
+
+    function renderQuestion(){
+      const q = questions[current];
+      const existing = clampAnswer(answers[current]);
+      $('counter').textContent = `第 ${current + 1} / ${questions.length} 题`;
+      $('questionTitle').textContent = q.title;
+      $('bar').style.width = progressPercent() + "%";
+      $('prevBtn').disabled = current === 0;
+      $('options').innerHTML = "";
+
+      q.options.forEach((opt, index) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "option";
+        btn.setAttribute("aria-pressed", existing === opt.score ? "true" : "false");
+        btn.innerHTML = `<strong>${index + 1}. ${opt.label}</strong><span>${opt.desc}</span>`;
+        btn.onclick = () => choose(index);
+        $('options').appendChild(btn);
+      });
+
+      $('questionTitle').focus();
+      saveProgress();
+    }
+
+    function choose(index){
+      if(locked) return;
+      const q = questions[current];
+      const opt = q.options[index];
+      if(!opt) return;
+
+      locked = true;
+      const picked = opt.score;
+      const at = current;
+
+      const buttons = [...$('options').querySelectorAll("button")];
+      buttons.forEach((btn, i) => btn.setAttribute("aria-pressed", i === index ? "true" : "false"));
+
+      setTimeout(() => {
+        answers[at] = picked;
+        current = at + 1;
+        locked = false;
+        if(current < questions.length){
+          renderQuestion();
+        }else{
+          showResult();
+        }
+      }, 150);
+    }
+
+    function goPrev(){
+      if(current > 0){
+        current -= 1;
+        renderQuestion();
+      }
+    }
+
+    function levelByPercent(percent){
+      if(percent <= 30) return {
+        name: "起步期",
+        color: "#ef4444",
+        summary: "你现在最大的问题不是能力差，而是求职材料和动作还没成型。先不要海投，把简历和基础经历补出来。"
+      };
+      if(percent <= 50) return {
+        name: "准备中",
+        color: "#f59e0b",
+        summary: "你已经有一些基础，但简历、经历表达或投递节奏还不稳定。接下来要靠小步迭代，把每次反馈变成修改清单。"
+      };
+      if(percent <= 75) return {
+        name: "可投递",
+        color: "#4f46e5",
+        summary: "你已经具备投基础岗位的条件，但仍要持续打磨项目描述、面试表达和岗位匹配度。"
+      };
+      return {
+        name: "冲刺期",
+        color: "#16a34a",
+        summary: "准备度较高，接下来重点是定向投递、面试复盘和作品集打磨，避免只在低质量岗位上反复消耗。"
+      };
+    }
+
+    function buildGapAction(){
+      const items = [];
+
+      if(answers[0] <= 1) items.push({
+        gap: "简历还不成型：先整理教育背景、技能、课程项目和可证明成果。",
+        action: "今天写出一版简历骨架，不要等“完美经历”。",
+        order: 0
+      });
+      if(answers[1] <= 1) items.push({
+        gap: "项目经历缺少结果：把能回忆的课程作业、社团、兼职先列成清单。",
+        action: "选 1 段经历，按“背景—任务—行动—结果”写成 3 条简历条目。",
+        order: 1
+      });
+      if(answers[2] <= 1) items.push({
+        gap: "岗位方向不清：先缩小到 2～3 类岗位，不要盲目投所有工作。",
+        action: "找 5 条真实 JD，记录共同要求和自己的缺口。",
+        order: 2
+      });
+      if(answers[3] <= 1) items.push({
+        gap: "缺少可展示材料：把图纸、表格、报告、证书或网页整理成作品集文件夹。",
+        action: "新建一个作品集文件夹，按项目名称、成果、日期分类。",
+        order: 3
+      });
+      if(answers[4] <= 1) items.push({
+        gap: "面试表达没练过：自我介绍是第一优先级。",
+        action: "写 1 分钟自我介绍，并录音回看语速和卡顿位置。",
+        order: 4
+      });
+      if(answers[5] <= 1) items.push({
+        gap: "投递和跟进没有记录：容易错过面试，也无法复盘转化率。",
+        action: "建一张投递表，记录岗位、渠道、投递日期、状态、下次跟进时间。",
+        order: 5
+      });
+      if(answers[6] <= 1) items.push({
+        gap: "短板判断模糊：把焦虑拆成技能、经历、表达、证书等具体项。",
+        action: "列出 3 个最近 7 天能补的短板，每个对应一个小任务。",
+        order: 6
+      });
+      if(answers[7] <= 1) items.push({
+        gap: "软件/工具熟练度不足：先用真实作业练独立交付，而不是只看教程。",
+        action: "挑一个常用软件，完成一张练习成果并保存为作品集材料。",
+        order: 7
+      });
+      if(answers[8] <= 1) items.push({
+        gap: "心态拖延：先投低一档但真实的岗位，用反馈代替空想。",
+        action: "今天先收藏 3 个匹配岗位，完成第一批投递准备。",
+        order: 8
+      });
+      if(answers[9] <= 1) items.push({
+        gap: "信息渠道单一：补齐学校就业网、招聘平台、老师学长和校招群。",
+        action: "整理一份渠道清单，标注每个渠道适合投什么岗位。",
+        order: 9
+      });
+
+      if(items.length === 0){
+        items.push({
+          gap: "基础材料较完整，下一步重点放在岗位匹配度和面试复盘。",
+          action: "每周复盘投递转化率，记录被拒原因和可改进点。",
+          order: 0
+        });
+      }
+
+      return items
+        .map(x => ({ ...x, weight: clampAnswer(answers[x.order]) ?? 0 }))
+        .sort((a, b) => a.weight - b.weight || a.order - b.order)
+        .slice(0, 5);
+    }
+
+    function buildDirections(){
+      const directions = [];
+      if(answers[7] >= 2) directions.push("可以优先看需要软件制图、资料整理、表格或模型交付的岗位。");
+      if(answers[4] >= 2 || answers[1] >= 2) directions.push("可以尝试需要表达、协调、材料整理和项目跟进的岗位。");
+      if(answers[2] <= 1) directions.push("先不要锁定过高目标岗位，先用基础实习和助理类岗位积累经历。");
+      if(directions.length === 0) directions.push("先从行政助理、资料整理、实习助理等基础岗位做起，积累真实经历。");
+      return directions;
+    }
+
+    function dimensionScores(){
+      return dimensions.map(dim => {
+        const max = dim.questions.length * 3;
+        const score = dim.questions.reduce((sum, idx) => sum + (clampAnswer(answers[idx]) ?? 0), 0);
+        return { name: dim.name, score, max, percent: max ? score / max : 0, single: dim.questions.length === 1 };
+      }).sort((a, b) => (a.single - b.single) || (a.percent - b.percent));
+    }
+
+    function renderDimensions(dims){
+      $('dimList').innerHTML = "";
+      dims.forEach((dim, index) => {
+        const row = document.createElement("div");
+        row.className = "dim";
+        const weakTag = index === 0 && !dim.single ? `<span class="weak-tag">最该补</span>` : "";
+        const singleHint = dim.single ? `<span class="dim-hint">单题参考</span>` : "";
+        row.innerHTML = `
+          <div class="dim-top">
+            <div class="dim-name">${dim.name}${weakTag}${singleHint}</div>
+            <div class="dim-score">${dim.score}/${dim.max}</div>
+          </div>
+          <div class="dim-bar"><span style="width:${Math.round(dim.percent * 100)}%"></span></div>
+        `;
+        $('dimList').appendChild(row);
+      });
+    }
+
+    function showResult(){
+      const validAnswers = answers.map(v => clampAnswer(v) ?? 0);
+      answers = validAnswers;
+      const total = validAnswers.reduce((a, b) => a + b, 0);
+      const max = questions.length * 3;
+      const percent = Math.round(total / max * 100);
+      const lv = levelByPercent(percent);
+      const paired = buildGapAction();
+      const gaps = paired.map(x => x.gap);
+      const actions = paired.map(x => x.action);
+      const directions = buildDirections();
+      const dims = dimensionScores();
+
+      resultData = { total, max, percent, level: lv.name, summary: lv.summary, gaps, actions, directions, dims };
+
+      $('scoreBox').textContent = `${total}/${max}`;
+      $('scoreBox').style.color = lv.color;
+      $('levelName').textContent = `${lv.name}（${percent}%）`;
+      $('summary').textContent = lv.summary;
+      renderDimensions(dims);
+      $('gaps').innerHTML = gaps.map(x => `<li>${x}</li>`).join("");
+      $('actions').innerHTML = actions.map(x => `<li>${x}</li>`).join("");
+      $('directions').innerHTML = directions.map(x => `<li>${x}</li>`).join("");
+
+      $('intro').classList.add("hidden");
+      $('quiz').classList.add("hidden");
+      $('result').classList.remove("hidden");
+      $('bar').style.width = "100%";
+      saveProgress();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function resultText(){
+      if(!resultData) return "";
+      const lines = [
+        `求职准备度自测结果：${resultData.level}（${resultData.total}/${resultData.max}，${resultData.percent}%）`,
+        "",
+        `总评：${resultData.summary}`,
+        "",
+        "分维度：",
+        ...resultData.dims.map(d => `- ${d.name}：${d.score}/${d.max}`),
+        "",
+        "优先补齐：",
+        ...resultData.gaps.map(x => `- ${x}`),
+        "",
+        "7 天行动：",
+        ...resultData.actions.map(x => `- ${x}`),
+        "",
+        "方向建议：",
+        ...resultData.directions.map(x => `- ${x}`)
+      ];
+      return lines.join("\n");
+    }
+
+    async function copyText(){
+      const text = resultText();
+      if(!text) return;
+      let copied = false;
+
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        try{
+          await navigator.clipboard.writeText(text);
+          copied = true;
+        }catch(e){
+          copied = false;
+        }
+      }
+
+      if(!copied){
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        textarea.setAttribute("readonly", "true");
+        textarea.style.position = "fixed";
+        textarea.style.left = "-9999px";
+        textarea.style.top = "0";
+        document.body.appendChild(textarea);
+        textarea.select();
+        try{
+          copied = document.execCommand("copy");
+        }catch(e){
+          copied = false;
+        }
+        document.body.removeChild(textarea);
+      }
+
+      if(copied){
+        $('copyBtn').textContent = "已复制";
+        setTimeout(() => $('copyBtn').textContent = "复制文本", 1500);
+      }else{
+        alert("复制失败，请手动选择结果文本复制。");
+      }
+    }
+
+    function exportTxt(){
+      const text = resultText();
+      if(!text) return;
+      const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "求职准备度自测结果.txt";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    function resetAll(){
+      current = 0;
+      answers = [];
+      locked = false;
+      resultData = null;
+      clearStorage();
+      $('result').classList.add("hidden");
+      $('quiz').classList.add("hidden");
+      $('intro').classList.remove("hidden");
+      $('bar').style.width = "0%";
+    }
+
+    function restore(){
+      const saved = loadProgress();
+      if(!saved) return;
+
+      if(Array.isArray(saved.answers)){
+        answers = saved.answers.map(v => clampAnswer(v) ?? null);
+      }
+      if(typeof saved.current === "number" && saved.current >= 0 && saved.current < questions.length){
+        current = saved.current;
+      }
+      resultData = saved.result || null;
+
+      if(resultData && saved.current === questions.length){
+        showResult();
+        return;
+      }
+
+      if(answers.some(v => v !== null)){
+        $('intro').classList.add("hidden");
+        $('quiz').classList.remove("hidden");
+        renderQuestion();
+      }
+    }
+
+    $('startBtn').onclick = () => {
+      $('intro').classList.add("hidden");
+      $('quiz').classList.remove("hidden");
+      current = 0;
+      renderQuestion();
+    };
+
+    $('prevBtn').onclick = goPrev;
+
+    $('clearBtn').onclick = () => {
+      if(confirm("清空后本次答题记录和结果会一起删掉，确定重测吗？")) resetAll();
+    };
+    $('copyBtn').onclick = copyText;
+    $('exportBtn').onclick = exportTxt;
+
+    document.addEventListener("keydown", event => {
+      if($('quiz').classList.contains("hidden")) return;
+      if(event.target && ["INPUT", "TEXTAREA"].includes(event.target.tagName)) return;
+
+      if(event.key === "ArrowLeft"){
+        event.preventDefault();
+        goPrev();
+        return;
+      }
+
+      const num = Number(event.key);
+      if(num >= 1 && num <= 4){
+        event.preventDefault();
+        choose(num - 1);
+      }
+    });
+
+    restore();
+  </script>
+</body>
 </html>
